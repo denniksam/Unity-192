@@ -4,14 +4,31 @@ using UnityEngine;
 
 public class Diamond : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private Rigidbody2D Rigidbody2D;  // змінна для посилання на компонент
+
     void Start()
     {
-        
+        Rigidbody2D = this.GetComponent<Rigidbody2D>();  // одержання посилання
+    }
+
+    void Update()
+    {
+        // Прикладання сили до тіла       // GetKeyDown - однократне спрацювання
+        if (Input.GetKey(KeyCode.Space))  // GetKey - постійне сканування, 
+        {                                 //  якщо затиснути - має ефект
+            Rigidbody2D.AddForce(  // Додаємо імпульс сили до тіла
+                Vector2.up * 10);  // спрямований вгору величиною 10 у.о.
+            
+            // Debug.Log("Force");    // Повідомлення у консоль
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Rigidbody2D.AddTorque(-50);
+        }
     }
 
     // Update is called once per frame
-    void Update()
+    void UpdateRot()
     {
         this.  // оскільки скрипт знаходиться на GameObject-і, this - GameObject(Diamond)
             transform.  // доступ до компонента Transform
