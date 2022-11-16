@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class GameMenu : MonoBehaviour
 {
+    // state
+    public static int ControlType;   // Continual(0)-Discrete(1)-Mixed(2)
+
+    // vars
     [SerializeField]
     private GameObject MenuContainer;
 
@@ -12,24 +16,41 @@ public class GameMenu : MonoBehaviour
 
     void Start()
     {
-        if (MenuContainer.activeInHierarchy) Time.timeScale = 0;
+        ShowMenu(MenuContainer.activeInHierarchy, "Start");
     }
 
-    void Update()
+    void LateUpdate()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (MenuContainer.activeInHierarchy)  // меню активне --> деактивуємо
-            {
-                MenuContainer.SetActive(false);
-                Time.timeScale = 1;
-            }
-            else                                  // меню не активне --> активуємо
-            {
-                MenuContainer.SetActive(true);
-                Time.timeScale = 0;
-            }
+            ShowMenu( ! MenuContainer.activeInHierarchy);
         }
+    }
+
+    private void ShowMenu(bool isVisible = true, string buttonText = "Resume")
+    {
+        if (isVisible)  // показуємо меню, зупиняємо час
+        {
+            MenuContainer.SetActive(true);
+            Time.timeScale = 0;
+            MenuButtonText.text = buttonText;
+        }
+        else  // прибираємо меню
+        {
+            MenuContainer.SetActive(false);
+            Time.timeScale = 1;
+        }
+    }
+
+    // ----------------- обробники подій UI  ---------------------------
+    public void MenuButtonClick()
+    {
+        ShowMenu(false);
+    }
+    public void ControlTypeChanged(int index)  // Dropdown
+    {
+        // Debug.Log(index);
+        GameMenu.ControlType = index;
     }
 }
 /* Time.timeScale - змінює хід часу.  
