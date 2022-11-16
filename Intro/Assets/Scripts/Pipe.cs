@@ -16,7 +16,7 @@ public class Pipe : MonoBehaviour
 
     void Update()
     {
-        this.transform.Translate(moveDirection * Speed * Time.deltaTime);
+        this.transform.Translate(moveDirection * Speed * Time.deltaTime); // * 0.01f);
     }
     /* Д.З. Встановити порожній об'єкт за межами камери,
      * додати до нього колайдер та скрипт, що відстежує зіткнення (Log)
