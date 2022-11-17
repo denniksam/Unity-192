@@ -1,19 +1,19 @@
-using System.Collections;
+п»їusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class Clock : MonoBehaviour
 {
-    // змінна для посилання на текстовий компонент TMPro
+    // Р·РјС–РЅРЅР° РґР»СЏ РїРѕСЃРёР»Р°РЅРЅСЏ РЅР° С‚РµРєСЃС‚РѕРІРёР№ РєРѕРјРїРѕРЅРµРЅС‚ TMPro
     private TextMeshProUGUI clock;
 
-    // накопичувальна змінна для часу
+    // РЅР°РєРѕРїРёС‡СѓРІР°Р»СЊРЅР° Р·РјС–РЅРЅР° РґР»СЏ С‡Р°СЃСѓ
     private float time;
 
     void Start()
     {
-        // пошук об'єкта-компонента та повернення посилання на нього
+        // РїРѕС€СѓРє РѕР±'С”РєС‚Р°-РєРѕРјРїРѕРЅРµРЅС‚Р° С‚Р° РїРѕРІРµСЂРЅРµРЅРЅСЏ РїРѕСЃРёР»Р°РЅРЅСЏ РЅР° РЅСЊРѕРіРѕ
         clock = this.GetComponent<TextMeshProUGUI>();
 
         time = 0;
@@ -21,7 +21,7 @@ public class Clock : MonoBehaviour
 
     void Update()
     {
-        time += Time.deltaTime;  // властивість, що зберігає проміжок часу між Update()
+        time += Time.deltaTime;  // РІР»Р°СЃС‚РёРІС–СЃС‚СЊ, С‰Рѕ Р·Р±РµСЂС–РіР°С” РїСЂРѕРјС–Р¶РѕРє С‡Р°СЃСѓ РјС–Р¶ Update()
         int t = (int)time;
         int h = t / 3600;
         int m = (t % 3600) / 60;

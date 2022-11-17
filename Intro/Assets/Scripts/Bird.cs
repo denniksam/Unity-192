@@ -12,10 +12,16 @@ public class Bird : MonoBehaviour
     private Rigidbody2D Rigidbody2D;
     private Vector2 jumpForce;
     private float holdTime;
+    private GameStat gameStat;   // посилання на скрипт класу GameStat на холсті "GameStat"
+
 
     void Start()
     {
         Rigidbody2D = GetComponent<Rigidbody2D>();
+        gameStat =                        // Шукаємо в ієрархії об'єкт з іменем 
+            GameObject.Find("GameStat")   // "GameStat" (це Canvas з ігровою статистикою)
+            .GetComponent<GameStat>();    // у ньому - компонент GameStat (скрипт класу GameStat)
+
         jumpForce = Vector2.up * JumpMagnitude;
         holdTime = 0;
     }
@@ -48,10 +54,22 @@ public class Bird : MonoBehaviour
             jump *= Time.deltaTime * 100;  // Корекція на швидкість кадрів
             if( holdTime > 0) Rigidbody2D.AddForce(jumpForce * jump);
         }
-        //if (jump > 0) Debug.Log(jump);
+        if (jump > 0)   // на пригання витрачається енергія
+        {
+            // Debug.Log(jump);
+            gameStat.GameEnergy -= jump / 5000;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)  // вихід з перетину колайдерів
+    {
+        if (other.gameObject.CompareTag("Tube"))    // проходження труби
+        {
+            gameStat.GameScore += 1;
+        }
     }
 }
-/* Д.З. На базі попереднього завдання (колізія птаха з трубою) додати:
- *  відображення меню після зіткнення
- *  змінити надпис кнопки на "Again"
+/* Д.З. Додати у повідомлення, яке відображається у меню паузи:
+ *  - кількість накопичених балів (score)
+ *  - рівень залишкової енергії 
  */

@@ -8,6 +8,7 @@ public class SpawnPoint : MonoBehaviour
     private GameObject Pipe;            // посилання для префабу
 
     private float pipeSpawnTime = 3;    // Час між трубами (3 секунди)
+    private float pipeDeltaTime = 3;    // Додаток, що зменшує складність
     private float pipeTime;             // зворотний відлік
 
     void Start()
@@ -19,7 +20,8 @@ public class SpawnPoint : MonoBehaviour
         pipeTime -= Time.deltaTime;
         if(pipeTime < 0)
         {
-            pipeTime = pipeSpawnTime;
+            pipeTime = pipeSpawnTime + pipeDeltaTime * (1 - GameMenu.GameDifficulty);
+            // Debug.Log(pipeTime);
             SpawnPipe();
         }
     }

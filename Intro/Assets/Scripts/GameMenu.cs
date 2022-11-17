@@ -5,17 +5,27 @@ using UnityEngine;
 public class GameMenu : MonoBehaviour
 {
     // state
-    public static int ControlType;   // Continual(0)-Discrete(1)-Mixed(2)
+    public static int ControlType;        // Continual(0)-Discrete(1)-Mixed(2)
+    public static float GameDifficulty;   // 0..1 value
 
     // vars
     [SerializeField]
     private GameObject MenuContainer;
-
     [SerializeField]
     private TMPro.TextMeshProUGUI MenuButtonText;
+    [SerializeField]
+    private TMPro.TextMeshProUGUI MessageText;
+
+    private GameStat gameStat;   // посилання на скрипт класу GameStat на холсті "GameStat"
 
     void Start()
     {
+        ControlType = 0;
+        GameDifficulty = .5f;
+        gameStat =                        // Шукаємо в ієрархії об'єкт з іменем 
+            GameObject.Find("GameStat")   // "GameStat" (це Canvas з ігровою статистикою)
+            .GetComponent<GameStat>();    // у ньому - компонент GameStat (скрипт класу GameStat)
+
         ShowMenu(MenuContainer.activeInHierarchy, "Start");
     }
 
@@ -23,17 +33,21 @@ public class GameMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            ShowMenu( ! MenuContainer.activeInHierarchy);
+            ShowMenu( !MenuContainer.activeInHierarchy, 
+                message: "Paused on time: " + 
+                gameStat.GameTime   // посилання на час у об'єкті-стані GameStat
+            );
         }
     }
 
-    private void ShowMenu(bool isVisible = true, string buttonText = "Resume")
+    private void ShowMenu(bool isVisible = true, string buttonText = "Resume", string message="")
     {
         if (isVisible)  // показуємо меню, зупиняємо час
         {
             MenuContainer.SetActive(true);
             Time.timeScale = 0;
             MenuButtonText.text = buttonText;
+            MessageText.text = message;
         }
         else  // прибираємо меню
         {
@@ -51,6 +65,11 @@ public class GameMenu : MonoBehaviour
     {
         // Debug.Log(index);
         GameMenu.ControlType = index;
+    }
+    public void DifficultyChanged(float value)
+    {
+        // Debug.Log(value);
+        GameMenu.GameDifficulty = value;
     }
 }
 /* Time.timeScale - змінює хід часу.  
