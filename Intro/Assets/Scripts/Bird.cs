@@ -61,6 +61,28 @@ public class Bird : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        // обертання на кут швидкості - ефект нахилу у напрямку руху
+        this.transform.rotation = Quaternion.Euler(0, 0, 3 * Rigidbody2D.velocity.y);
+        
+        if(Rigidbody2D.velocity.x != 0)  // якщо отримали імпульс по Х, то прибираємо його
+        {
+            Rigidbody2D.velocity = new Vector2(0, Rigidbody2D.velocity.y);
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Energy"))    // вхоплення енергії
+        {
+            gameStat.GameScore += 1;
+
+            if (gameStat.GameEnergy < 0.5f) gameStat.GameEnergy += 0.5f;
+            else gameStat.GameEnergy = 1;
+
+            GameObject.Destroy(other.gameObject);
+        }
+    }
     private void OnTriggerExit2D(Collider2D other)  // вихід з перетину колайдерів
     {
         if (other.gameObject.CompareTag("Tube"))    // проходження труби
@@ -69,7 +91,13 @@ public class Bird : MonoBehaviour
         }
     }
 }
-/* Д.З. Додати у повідомлення, яке відображається у меню паузи:
- *  - кількість накопичених балів (score)
- *  - рівень залишкової енергії 
+/* Д.З. Доробити проєкт 2Д, прикласти посилання на репозиторій/архів, у якому
+ *      окрім проєкту є скріншоти/відеозаписи
+ * - Декілька "життів", які витрачаються при програшах 
+ *   = зіткнення з перешкодою
+ *   = брак енергії (зменшувати енергію при зіткненнях з підлогою/стелею)
+ * - Додати об'єкти, що дозволяють збільшувати "життя" (з малою імовірністю)
+ * - На меню паузи додати відомості про рекорди (виводится поточний час - рекордний час)
+ * ** Додати можливість зберігти гру та відновити її
+ * ** Зберігати кілька рекордних місць, видавати повідомлення про рейтинг гравця
  */
