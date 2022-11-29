@@ -9,13 +9,13 @@ public class CameraMove : MonoBehaviour
 
     private Vector3 cam_sphere;               // вектор від камери до сфери
     private float zoom;                       // наближення/віддалення камери
-    private const float MIN_ZOOM  = 0.2f;     // мінімальний коеф. наближення
+    private const float MIN_ZOOM  = 0.0f;     // мінімальний коеф. наближення
     private const float MAX_ZOOM  =   2f;     // максимальний (віддалення)
     private const float ZOOM_SENS =  10f;     // чутливість (скролів на 1)
 
     private float camAngleVertical;           // кут повороту камери по вертикалі
     private const float MAX_VERTICAL  = 75;   // макс. кут повороту камери 
-    private const float MIN_VERTICAL  = 35;   // мін. кут повороту камери 
+    private const float MIN_VERTICAL  = 30;   // мін. кут повороту камери 
     private const float VERTICAL_SENS = 2;    // чутливість керування поворотом
 
     private float camAngleHorizontal;         // кут повороту камери по горизонталі

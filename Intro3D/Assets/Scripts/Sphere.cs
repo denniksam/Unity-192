@@ -30,15 +30,27 @@ public class Sphere : MonoBehaviour
 
         // відносно камери
         forceDirection = cam.transform.forward;     // напрям погляду камери
+        // cam.transform.forward - нахилений вниз, це значить,
+        // що зусилля будуть вперед-вдавлювати, назад-підкидати сферу
         forceDirection.y = 0;     // прибираємо вертикальну складову
-        forceDirection = forceDirection.normalized;  // довжина - 1
+        // але якщо просто зменшити (до 0) одну з компонент, то
+        // вектор стане коротший. Якщо ним користатись, то зусилля
+        // буде залежати від кута нахилу камери: якщо дивимось 
+        // вниз, то керування майже відсутнє.
+        // Нормалізація вектора - приведення його довжини до 1
+        // зі збереженням напрямку
+        forceDirection = forceDirection.normalized * fy;
+        // fy - зусилля вниз-вгору - прикладається убік погляду камери
 
+        // cam.transform.right не має вертикальної складової, оскільки
+        // камера не нахиляється по осі Z. Корекції не потрібно.
+        forceDirection += cam.transform.right * fx;
+        // оскільки fx - має знак, не потрібно додавати left.
+
+        rb.AddForce(forceDirection * FORCE_APML);
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        GameObject.Destroy(other.gameObject);
-    }
+   
 }
 /* Д.З. Лабіринт: створити стіни лабіринту
  * підібрати розміри кулі для проходження усіх отворів
