@@ -38,16 +38,16 @@ public class CameraMove : MonoBehaviour
     {
         if(Input.mouseScrollDelta.y != 0)
         {
-            zoom -= Input.mouseScrollDelta.y / ZOOM_SENS;
+            zoom -= Input.mouseScrollDelta.y / ZOOM_SENS * Time.timeScale;
             if (zoom < MIN_ZOOM) zoom = MIN_ZOOM;
             if (zoom > MAX_ZOOM) zoom = MAX_ZOOM;
         }
-        float mouseY = Input.GetAxis("Mouse Y");     // зрушення, швидкість (не координата курсора)
+        float mouseY = Input.GetAxis("Mouse Y") * Time.timeScale;     // зрушення, швидкість (не координата курсора)
         camAngleVertical -= mouseY * VERTICAL_SENS;
         if(camAngleVertical < MIN_VERTICAL) camAngleVertical = MIN_VERTICAL;
         if(camAngleVertical > MAX_VERTICAL) camAngleVertical = MAX_VERTICAL;
 
-        camAngleHorizontal += Input.GetAxis("Mouse X") * HORIZONTAL_SENS;
+        camAngleHorizontal += Input.GetAxis("Mouse X") * HORIZONTAL_SENS * Time.timeScale;
     }
 
     private void LateUpdate()
