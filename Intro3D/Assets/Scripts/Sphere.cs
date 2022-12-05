@@ -8,13 +8,22 @@ public class Sphere : MonoBehaviour
     private Camera cam;
 
     private Rigidbody rb;
+    private AudioSource hitWallSound;
+    private AudioSource hitGateSound;
+
     private Vector3 jump = Vector3.up * 100;
     private Vector3 forceDirection;
     private const float FORCE_APML = 2;
 
+
     void Start()
     {
         rb = this.GetComponent<Rigidbody>();
+
+        AudioSource[] audioSources =              // GetComponents - повертає масив
+            this.GetComponents<AudioSource>();    // у порядку слідування у інспекторі
+        hitWallSound = audioSources[0];
+        hitGateSound = audioSources[1];
     }
 
     void Update()
@@ -50,7 +59,24 @@ public class Sphere : MonoBehaviour
         rb.AddForce(forceDirection * FORCE_APML);
     }
 
-   
+    private void OnCollisionEnter(Collision other)
+    {
+        // Зіткнення зі стіною - програвання звуку зіткнення
+        // Беремо налаштування звуків з меню гри
+        if (GameMenu.SoundsEnabled)
+        {
+            AudioSource sound = other.gameObject.tag switch
+            {
+                "Wall" => hitWallSound,
+                "Gate" => hitGateSound,
+                _ => null
+            };
+            if (sound != null) {
+                sound.volume = GameMenu.SoundsVolume;
+                sound.Play();
+            }
+        }
+    }
 }
 /* Д.З. Лабіринт: створити стіни лабіринту
  * підібрати розміри кулі для проходження усіх отворів
