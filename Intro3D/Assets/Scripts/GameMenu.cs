@@ -9,7 +9,7 @@ public class GameMenu : MonoBehaviour
     public static bool SoundsEnabled { get; private set; }
     public static float SoundsVolume { get; private set; }
 
-    private const string preferencesFilename = "prefer.txt";
+    private const string preferencesFilename = "Assets/Files/prefer.txt";
 
     private static GameObject MenuContent;
     private static TMPro.TextMeshProUGUI MenuMessage;
@@ -17,6 +17,9 @@ public class GameMenu : MonoBehaviour
     private static TMPro.TextMeshProUGUI MenuStatistics;
 
     private AudioSource backgroundMusic;
+
+    private bool musicEnabled;
+    private float musicVolume;
 
     void Start()
     {
@@ -29,6 +32,10 @@ public class GameMenu : MonoBehaviour
                             .GetComponent<TMPro.TextMeshProUGUI>();
 
         backgroundMusic = this.GetComponent<AudioSource>();
+
+        // Налаштування звуків/музики: намагаємось зчитати з файла
+        // якщо успішно, то відображаємо на меню, а якщо ні, то беремо значення з меню
+
 
         SoundsEnabled   = GameObject.Find("SoundsToggle")
                             .GetComponent<UnityEngine.UI.Toggle>()
@@ -107,13 +114,25 @@ public class GameMenu : MonoBehaviour
             $"{backgroundMusic.isPlaying};{backgroundMusic.volume};{SoundsEnabled};{SoundsVolume}"
         );
     }
-    private void LoadPreferences()
+    private bool LoadPreferences()
     {
         if (System.IO.File.Exists(preferencesFilename))
         {
-            string[] data = System.IO.File.ReadAllText(preferencesFilename).Split(";");
-            // backgroundMusic.isPlaying = Convert.ToBoolean(data[0]);
+            try
+            {
+                string[] data = System.IO.File.ReadAllText(preferencesFilename).Split(";");
+                musicEnabled  = Convert.ToBoolean(data[0]);
+                musicVolume   = Convert.ToSingle(data[1]);
+                SoundsEnabled = Convert.ToBoolean(data[2]);
+                SoundsVolume  = Convert.ToSingle(data[3]);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Debug.LogError(ex.Message);
+            }
         }
+        return false;
     }
 }
 /* Д.З. Звуки: реалізувати відновлення параметрів налаштувань звуків при старті гри,
