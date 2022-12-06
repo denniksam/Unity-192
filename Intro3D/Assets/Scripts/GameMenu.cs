@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -35,14 +36,29 @@ public class GameMenu : MonoBehaviour
 
         // Налаштування звуків/музики: намагаємось зчитати з файла
         // якщо успішно, то відображаємо на меню, а якщо ні, то беремо значення з меню
-
-
-        SoundsEnabled   = GameObject.Find("SoundsToggle")
-                            .GetComponent<UnityEngine.UI.Toggle>()
-                            .isOn;
-        SoundsVolume    = GameObject.Find("SoundsVolume")
-                            .GetComponent<UnityEngine.UI.Slider>()
-                            .value;
+        var SoundsToggle = GameObject.Find("SoundsToggle")
+                            .GetComponent<UnityEngine.UI.Toggle>();
+        var SoundsSlider = GameObject.Find("SoundsVolume")
+                            .GetComponent<UnityEngine.UI.Slider>();
+        var MusicToggle = GameObject.Find("MusicToggle")
+                            .GetComponent<UnityEngine.UI.Toggle>();
+        var MusicSlider = GameObject.Find("MusicVolume")
+                            .GetComponent<UnityEngine.UI.Slider>();
+        if (this.LoadPreferences())
+        {
+            SoundsToggle.isOn  = SoundsEnabled;
+            SoundsSlider.value = SoundsVolume;
+            MusicToggle.isOn   = musicEnabled;
+            MusicSlider.value  = musicVolume;
+        }
+        else
+        {
+            SoundsEnabled = SoundsToggle.isOn;
+            SoundsVolume  = SoundsSlider.value;
+            musicEnabled  = MusicToggle.isOn;
+            musicVolume   = MusicSlider.value;
+        }
+        this.UpdateMusicState();
 
         if (MenuContent.activeInHierarchy) 
             GameMenu.Show(MenuMessage.text, MenuButtonTitle.text);
@@ -69,13 +85,13 @@ public class GameMenu : MonoBehaviour
     }
     public void MusicToggleChanged(bool isChecked)
     {
-        // Debug.Log(isChecked);
-        if (isChecked) backgroundMusic.Play();
-        else backgroundMusic.Stop();
+        musicEnabled = isChecked;
+        UpdateMusicState();
     }
     public void MusicVolumeChanged(float value)
     {
-        backgroundMusic.volume = value;
+        musicVolume = value;
+        UpdateMusicState();
     }
     public void SoundsToggleChanged(bool isChecked)
     {
@@ -86,6 +102,16 @@ public class GameMenu : MonoBehaviour
         GameMenu.SoundsVolume = value;
     }
     #endregion
+
+    private void UpdateMusicState()
+    {
+        backgroundMusic.volume = musicVolume;
+        if (musicEnabled)
+        {
+            if(!backgroundMusic.isPlaying) backgroundMusic.Play();
+        }
+        else if (backgroundMusic.isPlaying) backgroundMusic.Stop();
+    }
 
     public static void Show(                   // GameMenu.Show()
         string messageText = "Game paused",    // GameMenu.Show("Checkpoint Gone")
@@ -111,7 +137,7 @@ public class GameMenu : MonoBehaviour
     private void SavePreferences()
     {
         System.IO.File.WriteAllText(preferencesFilename,
-            $"{backgroundMusic.isPlaying};{backgroundMusic.volume};{SoundsEnabled};{SoundsVolume}"
+            $"{musicEnabled};{musicVolume};{SoundsEnabled};{SoundsVolume}"
         );
     }
     private bool LoadPreferences()
